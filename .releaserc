@@ -1,0 +1,12 @@
+{
+  "branches": ["main"],
+  "repositoryUrl": "https://github.com/srepio/api",
+  "plugins": [
+    [
+      "@semantic-release/github",
+      {
+          "successComment": false
+      }
+    ]
+  ]
+}
