@@ -1,6 +1,6 @@
 {
   "branches": ["main"],
-  "repositoryUrl": "https://github.com/srepio/api",
+  "repositoryUrl": "https://github.com/henrywhitaker3/flow",
   "plugins": [
     [
       "@semantic-release/github",
