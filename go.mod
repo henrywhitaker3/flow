@@ -1,6 +1,6 @@
 module github.com/henrywhitaker3/flow
 
-go 1.21.6
+go 1.22.2
 
 require github.com/stretchr/testify v1.8.4
 
