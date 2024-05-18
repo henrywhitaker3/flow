@@ -81,3 +81,29 @@ Which will print:
 0 throttled
 0 throttled
 ```
+
+To throttle a function call so that it runs once per second, and returns the first value without a throttled error:
+
+```go
+i := 1
+f := flow.SilentThrottle(func(ctx context.Context) (int, error) {
+    defer func() { i++ }()
+    return i, nil
+}, time.Millisecond)
+
+for i := range 3 {
+    if i == 2 {
+        time.Sleep(time.Millisecond * 2)
+    }
+    fmt.Println(f(context.Background()))
+    i++
+}
+```
+
+Which will print:
+
+```
+1 <nil>
+1 <nil>
+2 <nil>
+```

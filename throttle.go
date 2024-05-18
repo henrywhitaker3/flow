@@ -43,3 +43,21 @@ func Throttle[T any](f Effector[T], every time.Duration) Effector[T] {
 		return out, ErrThrottled
 	}
 }
+
+func SilentThrottle[T any](f Effector[T], every time.Duration) Effector[T] {
+	var value T
+	var err error
+
+	tf := Throttle(f, every)
+	return func(ctx context.Context) (T, error) {
+		res, iErr := tf(ctx)
+		if errors.Is(iErr, ErrThrottled) {
+			return value, nil
+		}
+
+		value = res
+		err = iErr
+
+		return value, err
+	}
+}
