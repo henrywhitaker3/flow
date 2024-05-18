@@ -19,7 +19,7 @@ func TestItRetriesTheFuncIfItErrors(t *testing.T) {
 		return struct{}{}, nil
 	}
 
-	retry := flow.Retry[struct{}](do, 3)
+	retry := flow.Retry(do, 3)
 	_, err := retry(context.Background())
 	assert.Nil(t, err)
 	assert.Equal(t, 3, calls)
@@ -35,7 +35,7 @@ func TestItReturnsTheErrorIfItHitsTheRetyLimit(t *testing.T) {
 		return struct{}{}, nil
 	}
 
-	retry := flow.Retry[struct{}](do, 2)
+	retry := flow.Retry(do, 2)
 	_, err := retry(context.Background())
 	assert.Equal(t, "bongo", err.Error())
 	assert.Equal(t, 2, calls)
@@ -48,7 +48,7 @@ func TestItOnlyCallsOnceIfItPassesFirstTime(t *testing.T) {
 		return struct{}{}, nil
 	}
 
-	retry := flow.Retry[struct{}](do, 3)
+	retry := flow.Retry(do, 3)
 	_, err := retry(context.Background())
 	assert.Nil(t, err)
 	assert.Equal(t, 1, calls)

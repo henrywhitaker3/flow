@@ -9,7 +9,7 @@ A collection of async/flow control functions
 Get the result of a function call later on:
 
 ```go
-resCh := flow.Eventually[int](context.Background(), func(ctx context.Context) (int, error) {
+resCh := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
     return 5, nil
 })
 
@@ -29,7 +29,7 @@ To retry a function a 3 times:
 
 ```go
 i := 0
-f := flow.Retry[int](func(ctx context.Context) (int, error) {
+f := flow.Retry(func(ctx context.Context) (int, error) {
     defer func() { i++ }()
     if i < 2 {
         return 0, errors.New("demo error")
@@ -46,7 +46,7 @@ To retyr a function 3 times with a millisecond delay between each try:
 
 ```go
 i := 0
-f := flow.RetryDelay[int](func(ctx context.Context) (int, error) {
+f := flow.RetryDelay(func(ctx context.Context) (int, error) {
     defer func() { i++ }()
     if i < 2 {
         return 0, errors.New("demo error")
@@ -64,7 +64,7 @@ To throttle a function call so that it runs once per second:
 
 ```go
 i := 1
-f := flow.Throttle[int](func(ctx context.Context) (int, error) {
+f := flow.Throttle(func(ctx context.Context) (int, error) {
     defer func() { i++ }()
     return i, nil
 }, time.Second)

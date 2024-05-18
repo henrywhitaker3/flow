@@ -11,7 +11,7 @@ import (
 )
 
 func TestItSendsAResultDownTheChannel(t *testing.T) {
-	res := flow.Eventually[int](context.Background(), func(ctx context.Context) (int, error) {
+	res := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
 		return 5, nil
 	})
 	out := <-res
@@ -20,7 +20,7 @@ func TestItSendsAResultDownTheChannel(t *testing.T) {
 }
 
 func TestItSendsErrorsDownTheChannel(t *testing.T) {
-	res := flow.Eventually[int](context.Background(), func(ctx context.Context) (int, error) {
+	res := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
 		return 0, errors.New("bongo")
 	})
 	out := <-res
@@ -30,7 +30,7 @@ func TestItSendsErrorsDownTheChannel(t *testing.T) {
 
 func TestItWorksInTheBackground(t *testing.T) {
 	start := time.Now()
-	res := flow.Eventually[int](context.Background(), func(ctx context.Context) (int, error) {
+	res := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
 		time.Sleep(time.Millisecond)
 		return 10, nil
 	})

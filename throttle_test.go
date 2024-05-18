@@ -14,7 +14,7 @@ func TestItReturnsTheFirstTimeItIsCalled(t *testing.T) {
 		return 1, nil
 	}
 
-	runDo := flow.Throttle[int](do, time.Second)
+	runDo := flow.Throttle(do, time.Second)
 	out, err := runDo(context.Background())
 	assert.Nil(t, err)
 	assert.Equal(t, 1, out)
@@ -27,7 +27,7 @@ func TestItThrottlesWhenCalledBeforeDurationHasPassed(t *testing.T) {
 
 	ctx := context.Background()
 
-	runDo := flow.Throttle[int](do, time.Millisecond)
+	runDo := flow.Throttle(do, time.Millisecond)
 	out, err := runDo(ctx)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, out)
@@ -44,7 +44,7 @@ func TestItLetsYouCallItAgainAfterDurationHasPassed(t *testing.T) {
 
 	ctx := context.Background()
 
-	runDo := flow.Throttle[int](do, time.Millisecond)
+	runDo := flow.Throttle(do, time.Millisecond)
 	out, err := runDo(ctx)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, out)
