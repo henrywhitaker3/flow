@@ -59,3 +59,28 @@ func TestItLetsYouCallItAgainAfterDurationHasPassed(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1, out)
 }
+
+func TestItSilentlyReturnsTheStartValueWhenCalledSilently(t *testing.T) {
+	i := 1
+	do := func(ctx context.Context) (int, error) {
+		defer func() { i++ }()
+		return i, nil
+	}
+
+	ctx := context.Background()
+
+	run := flow.SilentThrottle(do, time.Millisecond)
+
+	out, err := run(ctx)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, out)
+	out, err = run(ctx)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, out)
+
+	time.Sleep(time.Millisecond * 2)
+
+	out, err = run(ctx)
+	assert.Nil(t, err)
+	assert.Equal(t, 2, out)
+}
