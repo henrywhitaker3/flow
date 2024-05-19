@@ -9,18 +9,43 @@ A collection of async/flow control functions
 Get the result of a function call later on:
 
 ```go
-resCh := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
+res := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
     return 5, nil
 })
 
 ...
 
-res := <-resCh
+<-res.Done()
 if res.Err() != nil {
     panic(res.Err())
 }
 
 fmt.Println(res.Out()) // prints 5
+```
+
+#### Groups
+
+If you need to wait for multiple results to resolve:
+
+```go
+
+fast := flow.Eventually(context.Background(), func(ctx context.Context) (int, error) {
+    return 5, nil
+})
+slow := flow.Eventually(context.Background(), func(ctx context.Context) (string, error) {
+    time.Sleep(time.Second * 5)
+    return "bongo", nil
+})
+
+group := &flow.ResultGroup{}
+group.Add(fast)
+group.Add(slow)
+
+// The wait function blocks until all results have resolved
+group.Wait()
+
+fmt.Println(fast.Out()) // prints 5
+fmt.Println(slow.Out()) // prints bongo
 ```
 
 ### Retry
