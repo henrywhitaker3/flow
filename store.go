@@ -32,3 +32,9 @@ func (p *Store[T]) Delete(id string) {
 	defer p.mu.Unlock()
 	delete(p.store, id)
 }
+
+func (p *Store[T]) Len() int {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return len(p.store)
+}
