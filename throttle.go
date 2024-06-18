@@ -40,7 +40,7 @@ func ThrottleIn[T any](f EffectorIn[T], every time.Duration) EffectorIn[T] {
 	}
 }
 
-func ThrottleInSilently[T any](f EffectorIn[T], every time.Duration) EffectorIn[T] {
+func SilentThrottleIn[T any](f EffectorIn[T], every time.Duration) EffectorIn[T] {
 	tf := ThrottleIn[T](f, every)
 	return func(ctx context.Context, t T) error {
 		err := tf(ctx, t)
