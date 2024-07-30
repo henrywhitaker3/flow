@@ -34,8 +34,8 @@ func TestItCallsCallbacksWhenExpiringAnItem(t *testing.T) {
 	store := flow.NewExpiringStore[string]()
 	word := "ahkhge"
 	called := false
-	store.Put("bongo", word, time.Millisecond, func(s string) {
-		require.Equal(t, word, s)
+	store.Put("bongo", word, time.Millisecond, func(key string, val string) {
+		require.Equal(t, word, val)
 		called = true
 	})
 	store.Close()

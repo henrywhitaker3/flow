@@ -42,7 +42,7 @@ func (e *ExpiringStore[T]) Closed() <-chan struct{} {
 	return e.closed
 }
 
-type ExpiryCallbacks[T any] func(T)
+type ExpiryCallbacks[T any] func(key string, val T)
 
 func (e *ExpiringStore[T]) Put(id string, val T, exp time.Duration, callbacks ...ExpiryCallbacks[T]) {
 	e.store.Put(id, val)
@@ -65,9 +65,10 @@ func (e *ExpiringStore[T]) Put(id string, val T, exp time.Duration, callbacks ..
 			if ok {
 				e.store.Delete(id)
 				for _, cb := range callbacks {
-					cb(item)
+					cb(id, item)
 				}
 			}
+			return
 		}
 	}()
 }
