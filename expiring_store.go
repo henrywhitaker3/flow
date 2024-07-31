@@ -46,29 +46,29 @@ type ExpiryCallbacks[T any] func(key string, val T)
 
 func (e *ExpiringStore[T]) Put(id string, val T, exp time.Duration, callbacks ...ExpiryCallbacks[T]) {
 	e.store.Put(id, val)
+	e.expireAfter(id, val, exp, callbacks...)
+}
+
+func (e *ExpiringStore[T]) expireAfter(id string, val T, exp time.Duration, callbacks ...ExpiryCallbacks[T]) {
 	e.waits.Add(1)
+
 	cancel := make(chan struct{}, 1)
 	e.cancelMutex.Lock()
 	e.cancel[id] = cancel
 	e.cancelMutex.Unlock()
+
 	go func() {
 		defer e.waits.Done()
-		timer := time.NewTimer(exp)
-		defer timer.Stop()
 		select {
 		case <-e.Closed():
 			return
 		case <-cancel:
 			return
-		case <-timer.C:
-			item, ok := e.Get(id)
-			if ok {
-				e.store.Delete(id)
-				for _, cb := range callbacks {
-					cb(id, item)
-				}
+		case <-time.After(exp):
+			for _, cb := range callbacks {
+				cb(id, val)
 			}
-			return
+			e.store.Delete(id)
 		}
 	}()
 }
