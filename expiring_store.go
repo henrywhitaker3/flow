@@ -42,21 +42,20 @@ func (e *ExpiringStore[T]) Closed() <-chan struct{} {
 	return e.closed
 }
 
-type ExpiryCallbacks[T any] func(key string, val T)
+type ExpiryCallback[T any] func(key string, val T)
 
-func (e *ExpiringStore[T]) Put(id string, val T, exp time.Duration, callbacks ...ExpiryCallbacks[T]) {
+func (e *ExpiringStore[T]) Put(id string, val T, exp time.Duration, callbacks ...ExpiryCallback[T]) {
 	e.store.Put(id, val)
 	e.expireAfter(id, val, exp, callbacks...)
 }
 
-func (e *ExpiringStore[T]) expireAfter(id string, val T, exp time.Duration, callbacks ...ExpiryCallbacks[T]) {
-	e.waits.Add(1)
-
+func (e *ExpiringStore[T]) expireAfter(id string, val T, exp time.Duration, callbacks ...ExpiryCallback[T]) {
 	cancel := make(chan struct{}, 1)
 	e.cancelMutex.Lock()
 	e.cancel[id] = cancel
 	e.cancelMutex.Unlock()
 
+	e.waits.Add(1)
 	go func() {
 		defer e.waits.Done()
 		select {
