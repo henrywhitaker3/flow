@@ -55,6 +55,7 @@ func (e *ExpiringStore[T]) expireAfter(id string, val T, exp time.Duration, call
 	e.cancel[id] = cancel
 	e.cancelMutex.Unlock()
 
+	timer := time.After(exp)
 	e.waits.Add(1)
 	go func() {
 		defer e.waits.Done()
@@ -63,7 +64,7 @@ func (e *ExpiringStore[T]) expireAfter(id string, val T, exp time.Duration, call
 			return
 		case <-cancel:
 			return
-		case <-time.After(exp):
+		case <-timer:
 			for _, cb := range callbacks {
 				cb(id, val)
 			}
