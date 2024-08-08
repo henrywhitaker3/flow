@@ -21,3 +21,7 @@ func (o *OncePer[T]) Do(key T, f func()) {
 
 	once.Do(f)
 }
+
+func (o *OncePer[T]) Reset(key T) {
+	delete(o.onces, key)
+}

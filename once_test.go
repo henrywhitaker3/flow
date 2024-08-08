@@ -22,4 +22,9 @@ func TestOncePerSetsUpNewOnceIfDoesntExist(t *testing.T) {
 		called++
 	})
 	require.Equal(t, 2, called)
+	once.Reset("bongo")
+	once.Do("bongo", func() {
+		called++
+	})
+	require.Equal(t, 3, called)
 }
