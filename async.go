@@ -1,3 +1,4 @@
+// Package flow
 package flow
 
 import (
@@ -92,7 +93,7 @@ type resultItem interface {
 	Done() <-chan struct{}
 }
 
-// Adds an item to the result group
+// Add an item to the result group
 // This will return an error if Wait has already
 // been called. When Wait has finished, you can add
 // more results to resolve.
@@ -104,7 +105,7 @@ func (r *ResultGroup) Add(res resultItem) error {
 	return nil
 }
 
-// Blocks until every result has resolved
+// Wait blocks until every result has resolved
 func (r *ResultGroup) Wait() {
 	r.working = true
 	defer func() { r.working = false }()
